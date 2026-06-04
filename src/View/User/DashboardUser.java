@@ -3,138 +3,105 @@ package View.User;
 import View.Topup.TopUpForm;
 import View.User.RiwayatTransaksi;
 import View.Login.LoginForm;
-import javax.swing.*;
+import Helper.Session;
+import Helper.UITheme;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
-public class DashboardUser
-extends JFrame {
+public class DashboardUser extends JFrame {
 
-    JLabel title =
-    new JLabel(
-            "Dashboard User"
-    );
+    JButton btnTopup   = UITheme.makeMenuButton("Top Up Game", "🎮");
+    JButton btnRiwayat = UITheme.makeMenuButton("Riwayat Transaksi", "📋");
+    JButton btnLogout  = UITheme.makeDangerButton("Logout");
 
-    JButton btnTopup =
-    new JButton(
-            "Top Up Game"
-    );
-
-    JButton btnRiwayat =
-    new JButton(
-            "Riwayat Transaksi"
-    );
-
-    JButton btnLogout =
-    new JButton(
-            "Logout"
-    );
-
-    public DashboardUser(){
-
-        setTitle(
-                "User"
-        );
-
-        setSize(
-                400,
-                350
-        );
-
-        setLayout(null);
-
+    public DashboardUser() {
+        setTitle("Dashboard – " + Session.username);
+        setSize(480, 520);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
+        JPanel main = UITheme.makeGradientPanel();
+        main.setLayout(null);
+        setContentPane(main);
 
-        title.setBounds(
-                120,
-                20,
-                200,
-                30
-        );
-
-        btnTopup.setBounds(
-                100,
-                80,
-                180,
-                40
-        );
-
-        btnRiwayat.setBounds(
-                100,
-                140,
-                180,
-                40
-        );
-
-        btnLogout.setBounds(
-                100,
-                200,
-                180,
-                40
-        );
-
-        add(title);
-
-        add(btnTopup);
-
-        add(btnRiwayat);
-
-        add(btnLogout);
-
-        // EVENT TOP UP
-        btnTopup.addActionListener(
-
-        new ActionListener(){
-
-            @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
-
-                new TopUpForm();
-
+        // Header bar
+        JPanel header = new JPanel() {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(UITheme.BG_CARD);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.setColor(UITheme.BORDER_COLOR);
+                g2.drawLine(0, getHeight()-1, getWidth(), getHeight()-1);
+                g2.dispose();
             }
+            @Override public boolean isOpaque() { return false; }
+        };
+        header.setLayout(null);
+        header.setBounds(0, 0, 480, 70);
+        main.add(header);
 
-        });
+        JLabel logoLbl = new JLabel("🎮");
+        logoLbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 28));
+        logoLbl.setBounds(20, 18, 40, 36);
+        header.add(logoLbl);
 
-        // EVENT RIWAYAT
-        btnRiwayat.addActionListener(
+        JLabel titleLbl = UITheme.makeTitle("GAME TOPUP");
+        titleLbl.setHorizontalAlignment(SwingConstants.LEFT);
+        titleLbl.setBounds(65, 10, 200, 28);
+        header.add(titleLbl);
 
-        new ActionListener(){
+        JLabel userLbl = new JLabel("👤 " + Session.username);
+        userLbl.setFont(UITheme.FONT_LABEL);
+        userLbl.setForeground(UITheme.TEXT_SECONDARY);
+        userLbl.setBounds(65, 38, 200, 18);
+        header.add(userLbl);
 
-          @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
+        // Welcome card
+        JPanel wCard = UITheme.makeCardPanel();
+        wCard.setLayout(null);
+        wCard.setBounds(20, 88, 440, 90);
+        main.add(wCard);
 
-                new RiwayatTransaksi();
+        JLabel wIcon = new JLabel("👋", SwingConstants.LEFT);
+        wIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 30));
+        wIcon.setBounds(20, 15, 44, 44);
+        wCard.add(wIcon);
 
-            }
-        });
+        JLabel wTitle = new JLabel("Selamat Datang, " + Session.username + "!");
+        wTitle.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        wTitle.setForeground(UITheme.TEXT_PRIMARY);
+        wTitle.setBounds(70, 12, 340, 26);
+        wCard.add(wTitle);
 
-        // EVENT LOGOUT
-        btnLogout.addActionListener(
+        JLabel wSub = UITheme.makeSubtitle("Apa yang ingin kamu lakukan hari ini?");
+        wSub.setHorizontalAlignment(SwingConstants.LEFT);
+        wSub.setBounds(70, 40, 340, 20);
+        wCard.add(wSub);
 
-        new ActionListener(){
+        // Menu buttons
+        JLabel menuTitle = UITheme.makeLabel("MENU UTAMA");
+        menuTitle.setForeground(UITheme.TEXT_SECONDARY);
+        menuTitle.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        menuTitle.setBounds(20, 200, 200, 20);
+        main.add(menuTitle);
 
-            @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
+        btnTopup.setBounds(20, 226, 200, 100);
+        btnRiwayat.setBounds(240, 226, 200, 100);
+        main.add(btnTopup);
+        main.add(btnRiwayat);
 
-                dispose();
-                new LoginForm();
+        btnLogout.setBounds(170, 355, 140, 40);
+        main.add(btnLogout);
 
-            }
-
+        btnTopup.addActionListener(e -> new TopUpForm());
+        btnRiwayat.addActionListener(e -> new RiwayatTransaksi());
+        btnLogout.addActionListener(e -> {
+            dispose();
+            new LoginForm();
         });
 
         setVisible(true);
-
     }
-
 }

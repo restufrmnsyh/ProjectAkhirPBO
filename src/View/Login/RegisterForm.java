@@ -1,220 +1,91 @@
 package View.Login;
 
 import Controller.ControllerLogin;
-
 import Model.User.ModelUser;
+import Helper.UITheme;
 
 import javax.swing.*;
-
+import java.awt.*;
 import java.awt.event.*;
 
-public class RegisterForm
-extends JFrame {
+public class RegisterForm extends JFrame {
 
-    JLabel title =
-    new JLabel(
-            "REGISTER"
-    );
+    JTextField txtUsername = UITheme.makeTextField();
+    JPasswordField txtPassword = UITheme.makePasswordField();
+    JButton btnRegister = UITheme.makeSuccessButton("DAFTAR");
+    JButton btnKembali = UITheme.makeSecondaryButton("KEMBALI");
 
-    JLabel lbUsername =
-    new JLabel(
-            "Username"
-    );
-
-    JLabel lbPassword =
-    new JLabel(
-            "Password"
-    );
-
-    JTextField txtUsername =
-    new JTextField();
-
-    JPasswordField txtPassword =
-    new JPasswordField();
-
-    JButton btnRegister =
-    new JButton(
-            "REGISTER"
-    );
-
-    JButton btnKembali =
-    new JButton(
-            "KEMBALI"
-    );
-
-    public RegisterForm(){
-
-        setTitle(
-                "Register"
-        );
-
-        setSize(
-                350,
-                280
-        );
-
-        setLayout(null);
-
+    public RegisterForm() {
+        setTitle("GameTopup – Register");
+        setSize(420, 480);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
+        JPanel main = UITheme.makeGradientPanel();
+        main.setLayout(null);
+        setContentPane(main);
 
-        title.setBounds(
-                120,
-                20,
-                100,
-                30
-        );
+        JPanel card = UITheme.makeCardPanel();
+        card.setLayout(null);
+        card.setBounds(30, 40, 360, 380);
+        main.add(card);
 
-        lbUsername.setBounds(
-                30,
-                70,
-                100,
-                30
-        );
+        JLabel logoLbl = new JLabel("✨", SwingConstants.CENTER);
+        logoLbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 42));
+        logoLbl.setBounds(0, 18, 360, 52);
+        card.add(logoLbl);
 
-        txtUsername.setBounds(
-                120,
-                70,
-                150,
-                30
-        );
+        JLabel title = UITheme.makeTitle("BUAT AKUN");
+        title.setBounds(0, 75, 360, 32);
+        card.add(title);
 
-        lbPassword.setBounds(
-                30,
-                120,
-                100,
-                30
-        );
+        JLabel sub = UITheme.makeSubtitle("Daftarkan akun baru Anda");
+        sub.setBounds(0, 107, 360, 20);
+        card.add(sub);
 
-        txtPassword.setBounds(
-                120,
-                120,
-                150,
-                30
-        );
+        JSeparator sep = new JSeparator();
+        sep.setForeground(UITheme.BORDER_COLOR);
+        sep.setBounds(30, 135, 300, 2);
+        card.add(sep);
 
-        btnRegister.setBounds(
-                40,
-                180,
-                110,
-                35
-        );
+        JLabel lbUser = UITheme.makeLabel("Username");
+        lbUser.setBounds(30, 150, 100, 24);
+        card.add(lbUser);
 
-        btnKembali.setBounds(
-                170,
-                180,
-                110,
-                35
-        );
+        txtUsername.setBounds(30, 177, 300, 38);
+        card.add(txtUsername);
 
-        add(title);
+        JLabel lbPass = UITheme.makeLabel("Password");
+        lbPass.setBounds(30, 225, 100, 24);
+        card.add(lbPass);
 
-        add(lbUsername);
-        add(txtUsername);
+        txtPassword.setBounds(30, 252, 300, 38);
+        card.add(txtPassword);
 
-        add(lbPassword);
-        add(txtPassword);
+        btnRegister.setBounds(30, 310, 140, 40);
+        btnKembali.setBounds(190, 310, 140, 40);
+        card.add(btnRegister);
+        card.add(btnKembali);
 
-        add(btnRegister);
-        add(btnKembali);
-
-        // BUTTON REGISTER
-        btnRegister.addActionListener(
-
-        new ActionListener(){
-
-            @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
-
-                register();
-
-            }
-
-        });
-
-        // BUTTON KEMBALI
-        btnKembali.addActionListener(
-
-        new ActionListener(){
-
-            @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
-
-                dispose();
-
-            }
-
-        });
+        btnRegister.addActionListener(e -> register());
+        btnKembali.addActionListener(e -> dispose());
 
         setVisible(true);
-
     }
 
-    public void register(){
-
-        if(
-
-            txtUsername.getText().isEmpty()
-
-            ||
-
-            txtPassword.getText().isEmpty()
-
-        ){
-
-            JOptionPane.showMessageDialog(
-
-                    null,
-
-                    "Semua data wajib diisi"
-
-            );
-
+    public void register() {
+        if (txtUsername.getText().isEmpty() || new String(txtPassword.getPassword()).isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Semua data wajib diisi");
             return;
-
         }
 
-        Controller.ControllerLogin controller =
+        ControllerLogin controller = new ControllerLogin();
+        ModelUser user = new ModelUser();
+        user.setUsername(txtUsername.getText());
+        user.setPassword(new String(txtPassword.getPassword()));
+        controller.register(user);
 
-        new ControllerLogin();
-
-        ModelUser user =
-
-        new ModelUser();
-
-        user.setUsername(
-
-                txtUsername.getText()
-
-        );
-
-        user.setPassword(
-
-                txtPassword.getText()
-
-        );
-
-        controller.register(
-                user
-        );
-
-        JOptionPane.showMessageDialog(
-
-                null,
-
-                "Register Berhasil"
-
-        );
-
+        JOptionPane.showMessageDialog(null, "Register Berhasil");
         dispose();
-
     }
-
 }

@@ -3,10 +3,6 @@ package Model;
 import java.sql.*;
 
 public class Connector {
-    /* 
-        Menyimpan informasi database ke dalam sebuah variabel.
-        Pada contoh ini kita menggunakan database bernama "upnvy".
-     */
     private static String jdbc_driver = "com.mysql.cj.jdbc.Driver";
     private static String nama_db = "db_topup";
     private static String url_db = "jdbc:mysql://localhost:3306/db_topup";

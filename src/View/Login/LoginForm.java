@@ -6,206 +6,123 @@ import View.Admin.DashboardAdmin;
 import View.Login.RegisterForm;
 import View.User.DashboardUser;
 import Helper.Session;
-
+import Helper.UITheme;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class LoginForm
-extends JFrame {
+public class LoginForm extends JFrame {
 
-    JLabel title =
-    new JLabel("LOGIN");
+    JTextField txtUsername = UITheme.makeTextField();
+    JPasswordField txtPassword = UITheme.makePasswordField();
+    JButton btnLogin = UITheme.makePrimaryButton("LOGIN");
+    JButton btnRegister = UITheme.makeSecondaryButton("REGISTER");
 
-    JLabel lbUsername =
-    new JLabel("Username");
-
-    JLabel lbPassword =
-    new JLabel("Password");
-
-    JTextField txtUsername =
-    new JTextField();
-
-    JPasswordField txtPassword =
-    new JPasswordField();
-
-    JButton btnLogin =
-    new JButton("LOGIN");
-    JButton btnRegister =
-    new JButton(
-            "REGISTER"
-    );
-
-    public LoginForm(){
-
-        setTitle(
-                "Sistem Top Up Game"
-        );
-
-        setSize(
-                350,
-                250
-        );
-
-        setLayout(null);
-
+    public LoginForm() {
+        UITheme.applyGlobalTheme();
+        setTitle("GameTopup – Login");
+        setSize(420, 520);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(false);
 
-        setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
+        // Main panel
+        JPanel main = UITheme.makeGradientPanel();
+        main.setLayout(null);
+        setContentPane(main);
 
-        title.setBounds(
-                140,
-                10,
-                100,
-                30
-        );
+        // Card
+        JPanel card = UITheme.makeCardPanel();
+        card.setLayout(null);
+        card.setBounds(30, 50, 360, 400);
+        main.add(card);
 
-        lbUsername.setBounds(
-                30,
-                60,
-                100,
-                30
-        );
+        // Logo / emoji icon
+        JLabel logoLbl = new JLabel("🎮", SwingConstants.CENTER);
+        logoLbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
+        logoLbl.setBounds(0, 20, 360, 60);
+        card.add(logoLbl);
 
-        txtUsername.setBounds(
-                120,
-                60,
-                150,
-                30
-        );
+        // Title
+        JLabel title = UITheme.makeTitle("GAME TOPUP");
+        title.setBounds(0, 85, 360, 32);
+        card.add(title);
 
-        lbPassword.setBounds(
-                30,
-                110,
-                100,
-                30
-        );
+        // Subtitle
+        JLabel sub = UITheme.makeSubtitle("Masuk ke akun Anda");
+        sub.setBounds(0, 117, 360, 20);
+        card.add(sub);
 
-        txtPassword.setBounds(
-                120,
-                110,
-                150,
-                30
-        );
+        // Divider line
+        JSeparator sep = new JSeparator();
+        sep.setForeground(UITheme.BORDER_COLOR);
+        sep.setBackground(UITheme.BORDER_COLOR);
+        sep.setBounds(30, 147, 300, 2);
+        card.add(sep);
 
-        btnLogin.setBounds(
-            70,
-            160,
-            100,
-            30
-        );
-        btnRegister.setBounds(
-            180,
-            160,
-            100,
-            30
-        );
+        // Username
+        JLabel lbUser = UITheme.makeLabel("Username");
+        lbUser.setBounds(30, 163, 100, 24);
+        card.add(lbUser);
 
-        add(title);
+        txtUsername.setBounds(30, 190, 300, 38);
+        card.add(txtUsername);
 
-        add(lbUsername);
+        // Password
+        JLabel lbPass = UITheme.makeLabel("Password");
+        lbPass.setBounds(30, 238, 100, 24);
+        card.add(lbPass);
 
-        add(txtUsername);
+        txtPassword.setBounds(30, 265, 300, 38);
+        card.add(txtPassword);
 
-        add(lbPassword);
+        // Buttons
+        btnLogin.setBounds(30, 325, 140, 40);
+        btnRegister.setBounds(190, 325, 140, 40);
+        card.add(btnLogin);
+        card.add(btnRegister);
 
-        add(txtPassword);
+        // Version label
+        JLabel ver = UITheme.makeSubtitle("v1.0 • Sistem Top Up Game");
+        ver.setBounds(0, 460, 420, 20);
+        main.add(ver);
 
-        add(btnLogin);
-        add(btnRegister);
-
-        btnLogin.addActionListener(
-
-        new ActionListener(){
-
-            @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
-
-                login();
-
+        // Enter key triggers login
+        KeyAdapter enterKey = new KeyAdapter() {
+            @Override public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) login();
             }
+        };
+        txtUsername.addKeyListener(enterKey);
+        txtPassword.addKeyListener(enterKey);
 
-        });
-        
-        btnRegister.addActionListener(
-        new ActionListener(){
-
-            @Override
-            public void actionPerformed(
-                    ActionEvent e
-            ){
-
-                new RegisterForm();
-
-            }
-
-        });
+        btnLogin.addActionListener(e -> login());
+        btnRegister.addActionListener(e -> new RegisterForm());
 
         setVisible(true);
-
     }
 
-    public void login(){
+    public void login() {
+        String username = txtUsername.getText();
+        String password = new String(txtPassword.getPassword());
 
-        String username =
+        ControllerLogin controller = new ControllerLogin();
+        ModelUser user = controller.login(username, password);
 
-        txtUsername.getText();
-
-        String password =
-
-        txtPassword.getText();
-
-        ControllerLogin controller =
-
-        new ControllerLogin();
-
-        ModelUser user =
-
-        controller.login(
-                username,
-                password
-        );
-
-        if(user!=null){
-
-            JOptionPane.showMessageDialog(
-
-                    null,
-
-                    "Login Berhasil"
-
-            );
-            Session.id_user =
-            user.getId_user();
-            Session.username =
-            user.getUsername();
-            Session.role =
-            user.getRole();
+        if (user != null) {
+            JOptionPane.showMessageDialog(null, "Login Berhasil");
+            Session.id_user = user.getId_user();
+            Session.username = user.getUsername();
+            Session.role = user.getRole();
             dispose();
-            if(user.getRole().equals("admin")){
+            if (user.getRole().equals("admin")) {
                 new DashboardAdmin();
             } else {
                 new DashboardUser();
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Login Gagal");
         }
-
-        else{
-
-            JOptionPane.showMessageDialog(
-
-                    null,
-
-                    "Login Gagal"
-
-            );
-
-        }
-
     }
-
 }
